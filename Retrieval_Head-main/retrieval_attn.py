@@ -236,6 +236,10 @@ class LLMNeedleHaystackTester:
         output, retrieval_score = [], [[[0, ''] for _ in range(self.head_num)] for _ in range(self.layer_num)]
         past_kv = q_outputs.past_key_values
         matched_attention_matrices = []  # List to store attention matrices when 'wait' appears
+        
+        save_dir = "./results/attn_matrices"
+        os.makedirs(save_dir, exist_ok=True)
+        
         for step_i in range(decode_len):
             inp = inp.view(1, 1)
             outputs = self.model_to_test(input_ids=inp, past_key_values=past_kv, use_cache=True, output_attentions=True, attn_mode="torch" )
@@ -250,7 +254,7 @@ class LLMNeedleHaystackTester:
             if step_token=='<0x0A>' or inp.item()==144: break
         # Save only the matched attention matrices after decoding
         if matched_attention_matrices:
-            torch.save(matched_attention_matrices, f"results/attn_matrices_wait_{self.model_version}.pt")
+            torch.save(matched_attention_matrices, f"./results/attn_matrices_wait_{self.model_version}.pt")
         return output, retrieval_score
 
     def find_needle_idx(self, needle):
@@ -294,7 +298,8 @@ class LLMNeedleHaystackTester:
         self.needle_start, self.needle_end = self.find_needle_idx(self.real_needle)
         with torch.no_grad():
             q_outputs = self.model_to_test(input_ids=input_ids[:,:-1], use_cache=True, return_dict=True)
-            output, retrieval_score  = self.decode(q_outputs, input_ids[:,-1], 50)
+            #change the decode len if oom.
+            output, retrieval_score  = self.decode(q_outputs, input_ids[:,-1], 1000)
             response = self.enc.decode(output,skip_special_tokens=True).strip()
 
         test_end_time = time.time()
