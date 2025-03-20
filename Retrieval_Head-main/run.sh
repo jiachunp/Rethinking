@@ -1,0 +1,1 @@
+python retrieval_attn.py  --model_path $path_to_model --s 0 --e 0
