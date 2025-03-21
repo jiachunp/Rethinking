@@ -1,0 +1,6 @@
+torch
+transformers
+wheel
+flash-attn
+rouge-score
+accelerate
