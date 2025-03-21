@@ -289,6 +289,8 @@ class LLMNeedleHaystackTester:
         else:
             input_context = context + question
             input_ids = self.enc(input_context , return_tensors="pt")['input_ids']
+
+        input_ids = input_ids.to("cuda")
         
         # Prepare your message to send to the model you're going to evaluate
         test_start_time = time.time()
