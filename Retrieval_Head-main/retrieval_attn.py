@@ -116,7 +116,7 @@ class LLMNeedleHaystackTester:
         """
         if not needle or not haystack_dir or not retrieval_question:
             raise ValueError("Needle, haystack, and retrieval_question must be provided.")
-        needles_and_stacks = [json.loads(l) for l in open(f"{haystack_dir}/needles.jsonl")]
+        needles_and_stacks = [json.loads(l) for l in open(f"{haystack_dir}/needles_reasoning.jsonl")]
         self.needle_list = [l["needle"] for l in needles_and_stacks]
         self.haystack_dir_list = [f"{haystack_dir}/part{i}" for i in range(1, 4)]
         self.retrieval_question_list = [l["question"] for l in needles_and_stacks]
